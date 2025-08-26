@@ -1,0 +1,10 @@
+
+{"compilerOptions": {
+    "target": "es2015", // You can set this to "es6" or "es2015" if desired
+    "lib": ["es2015", "dom"], // Add "es2015" or later to include Map and other ES6 features
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true
+  }
+}

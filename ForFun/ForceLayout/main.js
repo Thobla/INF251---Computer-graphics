@@ -1,4 +1,5 @@
-
+import { basicGraph } from "./modules/graphStructure.js";
+import { step } from "./modules/simulation.js";
 let gl = undefined;
 let canvas = undefined;
 
@@ -7,12 +8,11 @@ let vsSource = undefined;
 let fsSource = undefined;
 
 // TODO: Make this into init function
-let n = 6;
-let m = 7;
-//let positionMap = {0: [-0.5, 0.3], 1: [0, 0.4], 2: [0.5, 0.5], 3: [-0.45, -0.3], 4: [0, 0], 5:[0.4, -0.3]}
-let edgeList = [[0, 2], [0, 3], [1, 3], [1, 4], [2, 4], [3, 4], [3, 5]];
-let positionMap = [...Array(n + 1).keys()].map(() => [Math.random()*2 -1, Math.random()*2 - 1]);
-console.log(positionMap)
+//let n = 6;
+//let m = 7;
+////let positionMap = {0: [-0.5, 0.3], 1: [0, 0.4], 2: [0.5, 0.5], 3: [-0.45, -0.3], 4: [0, 0], 5:[0.4, -0.3]}
+//let edgeList = [[0, 2], [0, 3], [1, 3], [1, 4], [2, 4], [3, 4], [3, 5]];
+//let positionMap = [...Array(n + 1).keys()].map(() => [Math.random()*2 -1, Math.random()*2 - 1]);
 
 window.onload = function init(){
     canvas = document.getElementById("webgl-canvas");
@@ -94,35 +94,37 @@ function render(n, m){
     gl.clear(gl.COLOR_BUFFER_BIT);
     gl.useProgram(program);
     
+    step(basicGraph);
+    
     gl.drawArrays(gl.LINES, 0, 2*m);
-    gl.drawArrays(gl.POINTS, 14, n);
+    gl.drawArrays(gl.POINTS, 2*m, n);
 }
 
 function graphToBuffer(){
 
-    let bufferData = new Float32Array((n + 2*m) * 6);
+    let bufferData = new Float32Array((basicGraph.n + 2*basicGraph.m) * 6);
     // Drawing lines
-    for (i = 0; i < 2*m; i+=2){
-        bufferData[i*6] = positionMap[edgeList[i/2][0]][0];
-        bufferData[i*6 + 1] = positionMap[edgeList[i/2][0]][1];
+    for (let i = 0; i < 2*basicGraph.m; i+=2){
+        bufferData[i*6] = basicGraph.state.get(basicGraph.edgeList[i/2][0]).x;
+        bufferData[i*6 + 1] = basicGraph.state.get(basicGraph.edgeList[i/2][0]).y;
         bufferData[i*6 + 2] = 4;
         bufferData[i*6 + 3] = 1;
         bufferData[i*6 + 4] = 0;
         bufferData[i*6 + 5] = 0;
-        bufferData[(i+1)*6] = positionMap[edgeList[i/2][1]][0];
-        bufferData[(i+1)*6 + 1] = positionMap[edgeList[i/2][1]][1];
+        bufferData[(i + 1)*6] = basicGraph.state.get(basicGraph.edgeList[i/2][1]).x;
+        bufferData[(i + 1)*6 + 1] = basicGraph.state.get(basicGraph.edgeList[i/2][1]).y;
         bufferData[(i+1)*6 + 2] = 4;
         bufferData[(i+1)*6 + 3] = 0;
         bufferData[(i+1)*6 + 4] = 1;
         bufferData[(i+1)*6 + 5] = 0;
     }
-    for (i = 0; i < n; i++){
-        bufferData[m*12 + i*6] = positionMap[i][0];
-        bufferData[m*12 + i*6 + 1] = positionMap[i][1]
-        bufferData[m*12 + i*6 + 2] = 4;
-        bufferData[m*12 + i*6 + 3] = 1;
-        bufferData[m*12 + i*6 + 4] = 1;
-        bufferData[m*12 + i*6 + 5] = 1;
+    for (let i = 0; i < basicGraph.n; i++){
+        bufferData[basicGraph.m*12 + i*6] = basicGraph.state.get(i).x;
+        bufferData[basicGraph.m*12 + i*6 + 1] = basicGraph.state.get(i).y;
+        bufferData[basicGraph.m*12 + i*6 + 2] = 4;
+        bufferData[basicGraph.m*12 + i*6 + 3] = 1;
+        bufferData[basicGraph.m*12 + i*6 + 4] = 1;
+        bufferData[basicGraph.m*12 + i*6 + 5] = 1;
     }
-    return [bufferData, n, m];
+    return [bufferData, basicGraph.n, basicGraph.m];
 }
