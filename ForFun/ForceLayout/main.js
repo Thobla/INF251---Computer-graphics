@@ -7,13 +7,6 @@ let program = undefined;
 let vsSource = undefined;
 let fsSource = undefined;
 
-// TODO: Make this into init function
-//let n = 6;
-//let m = 7;
-////let positionMap = {0: [-0.5, 0.3], 1: [0, 0.4], 2: [0.5, 0.5], 3: [-0.45, -0.3], 4: [0, 0], 5:[0.4, -0.3]}
-//let edgeList = [[0, 2], [0, 3], [1, 3], [1, 4], [2, 4], [3, 4], [3, 5]];
-//let positionMap = [...Array(n + 1).keys()].map(() => [Math.random()*2 -1, Math.random()*2 - 1]);
-
 window.onload = function init(){
     canvas = document.getElementById("webgl-canvas");
     if (!canvas){
